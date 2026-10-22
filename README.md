@@ -33,7 +33,7 @@ JJWT (creating and checking JWT tokens) • Stripe Java library (payments) • L
 
 📸 Functionality-
 1. 🏠 Landing Page — the home page, from where a new user registers or logs in.
-
+!landing
 2. 🧭 Rider Dashboard — the rider selects pickup and drop locations on the map, sees the fare estimate, and can apply a promo code before booking.
   
 3. 🚕 Driver Dashboard — the driver goes online, sees ride requests, accepts a ride, and updates the trip status step by step (arriving → arrived → start trip → complete trip).
