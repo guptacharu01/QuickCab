@@ -1,0 +1,48 @@
+# QuickCab local stack: PostgreSQL + Spring Boot backend.
+# The React frontend runs with `npm run dev` (see README).
+# Start:  docker compose up --build
+# Backend: http://localhost:8080   Frontend: http://localhost:5173
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: quickcab-db
+    environment:
+      POSTGRES_DB: cabbooking
+      POSTGRES_USER: cabuser
+      POSTGRES_PASSWORD: cabpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cabuser -d cabbooking"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: quickcab-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/cabbooking
+      DB_USER: cabuser
+      DB_PASSWORD: cabpass
+      DDL_AUTO: validate # tables come from database/schema.sql in Docker
+      JWT_SECRET: ${JWT_SECRET:-change-this-dev-secret-to-at-least-32-chars}
+      CORS_ORIGINS: http://localhost:5173
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:

@@ -1,0 +1,24 @@
+# Secrets & local config
+.env
+*.env
+
+# Build output
+backend/target/
+frontend/dist/
+frontend/node_modules/
+
+# Database / runtime files
+*.dat
+receipts/
+emails/
+
+# IDE & OS
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
